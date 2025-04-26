@@ -7,7 +7,7 @@ import { FcGoogle } from "react-icons/fc";
 
 export default function Login() {
 
-    return <div className="h-screen w-full flex items-center justify-center p-4">
+    return <div className="h-screen w-screen flex items-center justify-center p-4">
         <Card className="w-full max-w-sm">
             <CardHeader>
                 <CardTitle className="text-xl">Login</CardTitle>

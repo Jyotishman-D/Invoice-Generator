@@ -16,7 +16,7 @@ export default async function MainLayout({ children }: { children: ReactNode }) 
         <div className="min-h-screen w-full flex">
             <Sidebar name={profile.name} />
 
-            <main className="flex-1 flex flex-col p-5 ml-[215px]">{children}</main>
+            <main className="flex-1 flex flex-col p-5 ml-[220px]">{children}</main>
         </div>
     );
 
