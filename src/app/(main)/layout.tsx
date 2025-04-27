@@ -11,6 +11,11 @@ export default async function MainLayout({ children }: { children: ReactNode }) 
         return redirect("/login")
     }
 
+    const isOnboarding = !profile.address || !profile.name
+
+    if (isOnboarding) {
+        return redirect("/onboarding")
+    }
 
     return (
         <div className="min-h-screen w-full flex">
