@@ -158,6 +158,30 @@ exports.Prisma.VerificationTokenScalarFieldEnum = {
   expires: 'expires'
 };
 
+exports.Prisma.InvoiceScalarFieldEnum = {
+  id: 'id',
+  invoiceName: 'invoiceName',
+  invoiceNumber: 'invoiceNumber',
+  currency: 'currency',
+  status: 'status',
+  fromName: 'fromName',
+  fromEmail: 'fromEmail',
+  fromAddress: 'fromAddress',
+  toName: 'toName',
+  toEmail: 'toEmail',
+  toAddress: 'toAddress',
+  date: 'date',
+  dueDate: 'dueDate',
+  invoiceDescription: 'invoiceDescription',
+  note: 'note',
+  invoiceItemQuantity: 'invoiceItemQuantity',
+  invoiceItemrate: 'invoiceItemrate',
+  invoiceItemTotalAmount: 'invoiceItemTotalAmount',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -172,13 +196,17 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.InvoiceStatus = exports.$Enums.InvoiceStatus = {
+  PENDING: 'PENDING',
+  PAID: 'PAID'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
   Account: 'Account',
   Session: 'Session',
-  VerificationToken: 'VerificationToken'
+  VerificationToken: 'VerificationToken',
+  Invoice: 'Invoice'
 };
 
 /**

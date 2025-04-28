@@ -26,6 +26,8 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  Invoice Invoice[]
 }
 
 model Account {
@@ -65,4 +67,40 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
+}
+
+model Invoice {
+  id String @id @default(cuid())
+
+  invoiceName   String
+  invoiceNumber Int
+  currency      String
+  status        InvoiceStatus
+
+  fromName    String
+  fromEmail   String
+  fromAddress String
+  toName      String
+  toEmail     String
+  toAddress   String
+
+  date               DateTime
+  dueDate            Int
+  invoiceDescription String
+  note               String?
+
+  invoiceItemQuantity    Int
+  invoiceItemrate        Int
+  invoiceItemTotalAmount Int
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
 }
