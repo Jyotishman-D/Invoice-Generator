@@ -4,19 +4,18 @@ import { CalendarIcon, Currency } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Calendar } from "./ui/calendar";
-import { Card, CardContent } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod";
+import { object, z } from "zod";
 import { format } from "date-fns"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -26,12 +25,13 @@ import { Textarea } from "./ui/textarea";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { InvoiceStatus } from "@/generated/prisma";
 
 const formSchema = z.object({
     invoiceName: z.string().min(1),
     invoiceNumber: z.coerce.number(),
     currency: z.enum(["INR", "USD"]),
-    status: z.enum(["PAID", "PENDING"]),
+    status: z.nativeEnum(InvoiceStatus),
     from: z.object({
         name: z.string().min(1),
         email: z.string().email(),
@@ -62,6 +62,7 @@ export function CreateInvoice() {
             invoiceName: "",
             invoiceNumber: 0,
             currency: "INR",
+            status: InvoiceStatus.PENDING,
             from: {
                 name: "",
                 email: "",
@@ -72,7 +73,7 @@ export function CreateInvoice() {
                 email: "",
                 address: ""
             },
-            date: new Date(),
+            date: z.coerce.date().parse(new Date()),
             dueDate: 0,
             invoiceDescription: "",
             invoiceItemQuantity: 0,
@@ -95,6 +96,9 @@ export function CreateInvoice() {
 
     return (
         <Card className="w-full max-w-5xl mx-auto">
+            <CardHeader>
+                <CardTitle className="text-xl font-bold">Create New Invoice</CardTitle>
+            </CardHeader>
             <CardContent className="p-6">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -172,19 +176,18 @@ export function CreateInvoice() {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Status</FormLabel>
-                                                <Select onValueChange={field.onChange}>
+                                                <Select defaultValue={field.value} onValueChange={field.onChange}>
                                                     <FormControl>
                                                         <SelectTrigger className="w-full">
                                                             <SelectValue placeholder="Select currency" />
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        <SelectItem value="PENDING">
-                                                            PENDING
-                                                        </SelectItem>
-                                                        <SelectItem value="PAID">
-                                                            PAID
-                                                        </SelectItem>
+                                                        {Object.values(InvoiceStatus).map((status) => (
+                                                            <SelectItem key={status} value={status}>
+                                                                {status}
+                                                            </SelectItem>
+                                                        ))}
                                                     </SelectContent>
                                                 </Select>
                                                 <FormMessage />
@@ -395,7 +398,7 @@ export function CreateInvoice() {
                                     />
                                 </div>
 
-                                {/* <div className="col-span-2">
+                                <div className="col-span-2">
                                     <FormField
                                         control={form.control}
                                         name="invoiceItemTotalAmount"
@@ -409,7 +412,7 @@ export function CreateInvoice() {
                                             </FormItem>
                                         )}
                                     />
-                                </div> */}
+                                </div>
                             </div>
 
                             <div className="flex justify-end">

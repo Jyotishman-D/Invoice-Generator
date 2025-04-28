@@ -18,7 +18,7 @@ const invoiceSchema = z.object({
         email: z.string().email(),
         address: z.string().min(1)
     }),
-    date: z.string().transform(str => new Date(str)).or(z.date()),
+    date: z.coerce.date(),
     dueDate: z.coerce.number().optional(),
     invoiceDescription: z.string().min(1),
     invoiceItemQuantity: z.coerce.number(),
