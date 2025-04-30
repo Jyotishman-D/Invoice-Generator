@@ -1,11 +1,41 @@
+import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { CurrencyFormat } from "@/hooks/currency";
+import { CurrentProfile } from "@/lib/currentProfile";
+import { prisma } from "@/lib/db";
+import { format } from "date-fns";
 import { CheckCircle, DownloadCloud, Edit, Mail, MoreHorizontal, Plus, Trash } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
-export default function Invoices() {
+export default async function Invoices() {
+
+    const profile = await CurrentProfile();
+
+    if (!profile) {
+        return redirect("/login")
+    }
+
+    const invoices = await prisma.invoice.findMany({
+        where: {
+            userId: profile.id
+        },
+        select: {
+            id: true,
+            toName: true,
+            invoiceItemTotalAmount: true,
+            status: true,
+            invoiceNumber: true,
+            currency: true,
+            createdAt: true
+        },
+        orderBy: {
+            createdAt: "desc"
+        }
+    })
     return (
         <Card>
             <CardHeader>
@@ -33,12 +63,18 @@ export default function Invoices() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        <TableRow>
-                            <TableCell>#1</TableCell>
-                            <TableCell>jyoti</TableCell>
-                            <TableCell>655</TableCell>
-                            <TableCell>Paid</TableCell>
-                            <TableCell>2024</TableCell>
+                        {invoices.map((invoice)=>(
+                            <TableRow key={invoice.id}>
+                            <TableCell>{invoice.invoiceNumber}</TableCell>
+                            <TableCell>{invoice.toName}</TableCell>
+                            <TableCell>{CurrencyFormat({
+                                amount: invoice.invoiceItemTotalAmount,
+                                currency: invoice.currency as any
+                            })}</TableCell>
+                            <TableCell>
+                                <Badge>{invoice.status}</Badge>
+                            </TableCell>
+                            <TableCell>{format(invoice.createdAt, "dd-MM-yyyy")}</TableCell>
                             <TableCell className="text-end">
                                 <DropdownMenu>
                                     <DropdownMenuTrigger className="focus:outline-none" asChild>
@@ -79,6 +115,7 @@ export default function Invoices() {
                                 </DropdownMenu>
                             </TableCell>
                         </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
             </CardContent>

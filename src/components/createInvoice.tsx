@@ -26,6 +26,8 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { InvoiceStatus } from "@/generated/prisma";
+import { useEffect } from "react";
+import { CurrencyFormat } from "@/hooks/currency";
 
 const formSchema = z.object({
     invoiceName: z.string().min(1),
@@ -83,10 +85,21 @@ export function CreateInvoice() {
         },
     });
 
+    const quantity = form.watch("invoiceItemQuantity");
+    const rate = form.watch("invoiceItemrate")
+
+    useEffect(() => {
+        if (quantity && rate) {
+            const calculatedAmount = quantity * rate;
+            form.setValue("invoiceItemTotalAmount", calculatedAmount);
+        }
+    }, [quantity, rate, form]);
+
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
             await axios.post(`/api/invoiceRoute`, values);
-            router.push("/invoices")
+            router.push("/invoices");
+            form.reset()
             toast.success("Invoice created")
         } catch (error) {
             console.log(error);
@@ -406,7 +419,7 @@ export function CreateInvoice() {
                                             <FormItem>
                                                 <FormLabel>Amount</FormLabel>
                                                 <FormControl>
-                                                    <Input disabled placeholder="0" {...field} />
+                                                    <Input value={CurrencyFormat({ amount: form.watch("invoiceItemTotalAmount"), currency: form.watch("currency") })} disabled placeholder="0" />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -419,13 +432,13 @@ export function CreateInvoice() {
                                 <div className="w-1/3">
                                     <div className="flex justify-between items-center py-2">
                                         <span>Subtotal</span>
-                                        <span>$5.00</span>
+                                        <span>{CurrencyFormat({ amount: form.watch("invoiceItemTotalAmount"), currency: form.watch("currency") })}</span>
                                     </div>
 
-                                    <div className="flex justify-between ietms-center py-2 border-t">
+                                    {/* <div className="flex justify-between ietms-center py-2 border-t">
                                         <span>Total</span>
                                         <span>Total</span>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
 
