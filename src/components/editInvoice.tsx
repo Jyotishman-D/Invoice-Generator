@@ -1,14 +1,6 @@
 "use client";
 
-import { CalendarIcon, Currency, Loader2 } from "lucide-react";
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
-import { Calendar } from "./ui/calendar";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { CalendarIcon, Currency } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { object, z } from "zod";
@@ -21,13 +13,24 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import { Textarea } from "./ui/textarea";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { InvoiceStatus } from "@/generated/prisma";
-import { useEffect, useState } from "react";
+import { Invoice, InvoiceStatus } from "@/generated/prisma";
+import { useEffect } from "react";
 import { CurrencyFormat } from "@/hooks/currency";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+
+interface EditInvoiceProps {
+    data: Invoice
+}
 
 const formSchema = z.object({
     invoiceName: z.string().min(1),
@@ -54,36 +57,34 @@ const formSchema = z.object({
 
 })
 
-export function CreateInvoice() {
-
-    const [isLoading, setIsLoading] = useState(false)
+export function EditInvoice({data}: EditInvoiceProps) {
 
     const router = useRouter();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            invoiceName: "",
-            invoiceNumber: 0,
+            invoiceName: data.invoiceName,
+            invoiceNumber: data.invoiceNumber,
             currency: "INR",
-            status: InvoiceStatus.PENDING,
+            status: data.status,
             from: {
-                name: "",
-                email: "",
-                address: ""
+                name: data.fromName,
+                email: data.fromEmail,
+                address: data.fromAddress
             },
             to: {
-                name: "",
-                email: "",
-                address: ""
+                name: data.toName,
+                email: data.toEmail,
+                address: data.toAddress
             },
-            date: z.coerce.date().parse(new Date()),
-            dueDate: 0,
-            invoiceDescription: "",
-            invoiceItemQuantity: 0,
-            invoiceItemrate: 0,
-            invoiceItemTotalAmount: 0,
-            note: ""
+            date: data.date,
+            dueDate: data.dueDate,
+            invoiceDescription: data.invoiceDescription,
+            invoiceItemQuantity: data.invoiceItemQuantity,
+            invoiceItemrate: data.invoiceItemrate,
+            invoiceItemTotalAmount: data.invoiceItemTotalAmount,
+            note: data.note || ""
         },
     });
 
@@ -99,22 +100,20 @@ export function CreateInvoice() {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            setIsLoading(true)
-            await axios.post(`/api/invoiceRoute`, values);
-            form.reset()
+            await axios.patch(`/api/invoiceRoute/editRoute/${data.id}`, values);
             router.push("/invoices");
-            toast.success("Invoice created")
+            form.reset()
+            toast.success("Invoice edited")
         } catch (error) {
             console.log(error);
-        } finally {
-            setIsLoading(false)
+
         }
     }
 
     return (
         <Card className="w-full max-w-5xl mx-auto">
             <CardHeader>
-                <CardTitle className="text-xl font-bold">Create New Invoice</CardTitle>
+                <CardTitle className="text-xl font-bold">Edit Invoice</CardTitle>
             </CardHeader>
             <CardContent className="p-6">
                 <Form {...form}>
@@ -461,15 +460,7 @@ export function CreateInvoice() {
                                     )}
                                 />
                             </div>
-                            <Button type="submit" className="flex ml-auto">
-
-                                {isLoading && (
-                                    <>
-                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                    </>
-                                )}
-                                Send Invoice to Client
-                            </Button>
+                            <Button type="submit" className="flex ml-auto">Edit Invoice</Button>
                         </div>
                     </form>
                 </Form>

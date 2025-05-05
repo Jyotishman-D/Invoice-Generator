@@ -1,10 +1,9 @@
-import { CurrencyFormat } from "@/hooks/currency";
 import { CurrentProfile } from "@/lib/currentProfile";
 import { prisma } from "@/lib/db";
-import { emailClient } from "@/lib/mailtrap";
-import { format } from "date-fns";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { emailClient } from "@/lib/mailtrap";
+import { CurrencyFormat } from "@/hooks/currency";
 
 const invoiceSchema = z.object({
     invoiceName: z.string().min(1),
@@ -31,7 +30,7 @@ const invoiceSchema = z.object({
 
 })
 
-export async function POST(req: NextRequest) {
+export async function PATCH(req: NextRequest, { params }: { params: { invoiceId: string } }) {
 
     try {
         const profile = await CurrentProfile();
@@ -50,7 +49,11 @@ export async function POST(req: NextRequest) {
 
         const values = result.data;
 
-        const invoice = await prisma.invoice.create({
+        const invoiceUpdate = await prisma.invoice.update({
+            where: {
+                id: params.invoiceId,
+                userId: profile.id,
+            },
             data: {
                 invoiceName: values.invoiceName,
                 invoiceNumber: values.invoiceNumber,
@@ -68,30 +71,35 @@ export async function POST(req: NextRequest) {
                 invoiceDescription: values.invoiceDescription,
                 invoiceItemQuantity: values.invoiceItemQuantity,
                 invoiceItemrate: values.invoiceItemrate,
-                userId: profile.id,
                 status: values.status
             }
         });
 
         const sender = {
             email: "hello@demomailtrap.co",
-            name: "Jyotishmna das",
+            name: "Jyotishman Das",
         };
-
-        emailClient.send({
-            from: sender,
-            to: [{ email: "jdas.random@gmail.com" }],
-            template_uuid: "1e53907f-a9d9-4cfa-8395-8e9266e36457",
-            template_variables: {
-                "clientName": values.to.name,
-                "invoiceNumber": values.invoiceNumber,
-                "dueDate": values.date.toISOString(),
-                "totalAmount": CurrencyFormat({ amount: values.invoiceItemTotalAmount, currency: values.currency }),
-                "invoiceLink": `http://localhost:3000/api/invoice/${invoice.id}`
+        const recipients = [
+            {
+                email: "jdas.random@gmail.com",
             }
-        });
+        ];
 
-        return NextResponse.json(invoice, { status: 200 })
+        emailClient
+            .send({
+                from: sender,
+                to: recipients,
+                template_uuid: "26c78a70-8c6c-4ac9-b5e0-3dc633cf7db1",
+                template_variables: {
+                    "clientName": values.to.name,
+                    "invoiceNumber": values.invoiceNumber,
+                    "dueDate": values.date.toISOString(),
+                    "totalAmount": CurrencyFormat({ amount: values.invoiceItemTotalAmount, currency: values.currency }),
+                    "invoiceLink": `http://localhost:3000/api/invoice/${invoiceUpdate.id}`
+                }
+            })
+
+        return NextResponse.json(invoiceUpdate, { status: 200 })
     } catch (error) {
         console.log(error);
         return new NextResponse("Internal server error", { status: 500 })
