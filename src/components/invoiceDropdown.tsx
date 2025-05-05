@@ -7,6 +7,7 @@ import Link from "next/link";
 import { DeleteInvoiceDialog } from "./modal/deleteInvoice";
 import { toast } from "sonner";
 import axios from "axios";
+import { PaidInvoiceDialog } from "./modal/paidInvoice";
 
 interface InvoiceDropdownProps {
     invoiceId: string
@@ -38,10 +39,12 @@ export function InvoiceDropdown({ invoiceId }: InvoiceDropdownProps) {
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                        <Link href="">
-                            <span>Mark as Paid</span>
-                            <CheckCircle className="mr-2 h-5 w-5 ml-auto" />
-                        </Link>
+                        <PaidInvoiceDialog id={invoiceId}>
+                            <div className="flex w-full items-center">
+                                <span>Mark as Paid</span>
+                                <CheckCircle className="mr-2 h-4 w-4 ml-auto" />
+                            </div>
+                        </PaidInvoiceDialog>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                         <Link href={`/api/invoice/${invoiceId}`} target="_blank">
