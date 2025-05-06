@@ -10,10 +10,11 @@ import axios from "axios";
 import { PaidInvoiceDialog } from "./modal/paidInvoice";
 
 interface InvoiceDropdownProps {
-    invoiceId: string
+    invoiceId: string;
+    status: string;
 }
 
-export function InvoiceDropdown({ invoiceId }: InvoiceDropdownProps) {
+export function InvoiceDropdown({ invoiceId, status }: InvoiceDropdownProps) {
 
     const sendReminder = async () => {
         toast.promise(await axios.post(`/api/emailReminder/${invoiceId}`), {
@@ -39,12 +40,14 @@ export function InvoiceDropdown({ invoiceId }: InvoiceDropdownProps) {
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                        <PaidInvoiceDialog id={invoiceId}>
-                            <div className="flex w-full items-center">
-                                <span>Mark as Paid</span>
-                                <CheckCircle className="mr-2 h-4 w-4 ml-auto" />
-                            </div>
-                        </PaidInvoiceDialog>
+                        {status !== "PAID" && (
+                            <PaidInvoiceDialog id={invoiceId}>
+                                <div className="flex w-full items-center">
+                                    <span>Mark as Paid</span>
+                                    <CheckCircle className="mr-2 h-4 w-4 ml-auto" />
+                                </div>
+                            </PaidInvoiceDialog>
+                        )}
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                         <Link href={`/api/invoice/${invoiceId}`} target="_blank">

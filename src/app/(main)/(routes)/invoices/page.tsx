@@ -77,7 +77,7 @@ export default async function Invoices() {
                                 </TableCell>
                                 <TableCell>{format(invoice.date, "dd-MM-yyyy")}</TableCell>
                                 <TableCell className="text-end">
-                                    <InvoiceDropdown invoiceId={invoice.id} />
+                                    <InvoiceDropdown invoiceId={invoice.id} status={invoice.status} />
                                 </TableCell>
                             </TableRow>
                         ))}
