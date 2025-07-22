@@ -11,7 +11,7 @@ interface SidebarLinkProps {
     name: string;
     href: string;
     icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>
-}
+};
 
 export const Links: SidebarLinkProps[] = [
     {
@@ -29,9 +29,7 @@ export const Links: SidebarLinkProps[] = [
 ]
 
 export function SidebarLinks() {
-
     const pathname = usePathname()
-
     return (
         <>
             {Links.map((link) => (
@@ -42,7 +40,6 @@ export function SidebarLinks() {
                     <link.icon className="w-4 h-4" />
                     {link.name}
                 </Link>
-
             ))}
         </>
     )

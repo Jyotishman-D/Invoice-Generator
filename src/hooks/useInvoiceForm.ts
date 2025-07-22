@@ -6,17 +6,17 @@ import { toast } from "sonner";
 import axios from "axios";
 import { z } from "zod";
 import { InvoiceStatus } from "@/generated/prisma";
-import { formSchema } from "@/lib/zod";
+import { invoiceSchema } from "@/lib/zod";
 
 // Types
-export type FormData = z.infer<typeof formSchema>;
+export type FormData = z.infer<typeof invoiceSchema>;
 
 export const useInvoiceForm = () => {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
     const form = useForm<FormData>({
-        resolver: zodResolver(formSchema),
+        resolver: zodResolver(invoiceSchema),
         defaultValues: {
             invoiceName: "",
             invoiceNumber: 0,

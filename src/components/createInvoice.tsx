@@ -5,13 +5,13 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Form } from "@/components/ui/form"
 import { useInvoiceForm } from "@/hooks/useInvoiceForm";
-import { InvoiceHeader } from "./createInvoice/InvoiceHeader";
-import { InvoiceDetails } from "./createInvoice/InvoiceDetails";
-import { ContactSection } from "./createInvoice/ContactSection";
-import { DateSection } from "./createInvoice/DateSection";
-import { InvoiceItems } from "./createInvoice/InvoiceItems";
-import { InvoiceSummary } from "./createInvoice/InvoiceSummary";
-import { NotesSection } from "./createInvoice/NotesSection";
+import { InvoiceHeader } from "./createInvoiceForm/InvoiceHeader";
+import { InvoiceDetails } from "./createInvoiceForm/InvoiceDetails";
+import { ContactSection } from "./createInvoiceForm/ContactSection";
+import { DateSection } from "./createInvoiceForm/DateSection";
+import { InvoiceItems } from "./createInvoiceForm/InvoiceItems";
+import { InvoiceSummary } from "./createInvoiceForm/InvoiceSummary";
+import { NotesSection } from "./createInvoiceForm/NotesSection";
 
 // Main component
 export function CreateInvoice() {

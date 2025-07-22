@@ -1,7 +1,7 @@
 import { InvoiceStatus } from "@/generated/prisma";
 import { z } from "zod";
 
-export const formSchema = z.object({
+export const invoiceSchema = z.object({
     invoiceName: z.string().min(1),
     invoiceNumber: z.coerce.number(),
     currency: z.enum(["INR", "USD"]),

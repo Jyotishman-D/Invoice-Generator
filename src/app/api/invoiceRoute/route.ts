@@ -2,54 +2,25 @@ import { CurrencyFormat } from "@/hooks/currency";
 import { CurrentProfile } from "@/lib/currentProfile";
 import { prisma } from "@/lib/db";
 import { emailClient } from "@/lib/mailtrap";
+import { invoiceSchema } from "@/lib/zod";
 import { format } from "date-fns";
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
-
-const invoiceSchema = z.object({
-    invoiceName: z.string().min(1),
-    invoiceNumber: z.coerce.number(),
-    currency: z.enum(["INR", "USD"]),
-    status: z.enum(["PAID", "PENDING"]),
-    from: z.object({
-        name: z.string().min(1),
-        email: z.string().email(),
-        address: z.string().min(1)
-    }),
-    to: z.object({
-        name: z.string().min(1),
-        email: z.string().email(),
-        address: z.string().min(1)
-    }),
-    date: z.coerce.date(),
-    dueDate: z.coerce.number().optional(),
-    invoiceDescription: z.string().min(1),
-    invoiceItemQuantity: z.coerce.number(),
-    invoiceItemrate: z.coerce.number(),
-    invoiceItemTotalAmount: z.coerce.number(),
-    note: z.string().optional()
-
-})
 
 export async function POST(req: NextRequest) {
-
     try {
         const profile = await CurrentProfile();
-
         if (!profile) {
             return new NextResponse("Unauthorized", { status: 401 })
-        }
+        };
 
         const body = await req.json();
-
-        const result = invoiceSchema.safeParse(body)
+        const result = invoiceSchema.safeParse(body);
 
         if (!result.success) {
             return NextResponse.json(result.error.format(), { status: 400 })
-        }
+        };
 
         const values = result.data;
-
         const invoice = await prisma.invoice.create({
             data: {
                 invoiceName: values.invoiceName,
@@ -96,4 +67,4 @@ export async function POST(req: NextRequest) {
         console.log(error);
         return new NextResponse("Internal server error", { status: 500 })
     }
-}
+};

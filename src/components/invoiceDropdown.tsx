@@ -34,36 +34,36 @@ export function InvoiceDropdown({ invoiceId, status }: InvoiceDropdownProps) {
             <DropdownMenuContent align="end">
                 <DropdownMenuGroup>
                     <DropdownMenuItem asChild>
-                        <Link href={`/invoices/edit/${invoiceId}`}>
-                            <span className="cursor-pointer">Edit</span>
-                            <Edit className="mr-2 h-5 w-5 ml-auto" />
+                        <Link href={`/invoices/edit/${invoiceId}`} className="flex items-center justify-between w-full cursor-pointer">
+                            <span>Edit</span>
+                            <Edit className="h-4 w-4" />
                         </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                        {status !== "PAID" && (
+                    {status !== "PAID" && (
+                        <DropdownMenuItem asChild>
                             <PaidInvoiceDialog id={invoiceId}>
-                                <div className="flex w-full items-center">
+                                <div className="flex items-center justify-between w-full cursor-pointer">
                                     <span>Mark as Paid</span>
-                                    <CheckCircle className="mr-2 h-4 w-4 ml-auto" />
+                                    <CheckCircle className="h-4 w-4" />
                                 </div>
                             </PaidInvoiceDialog>
-                        )}
-                    </DropdownMenuItem>
+                        </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem asChild>
-                        <Link href={`/api/invoice/${invoiceId}`} target="_blank">
+                        <Link href={`/api/invoice/${invoiceId}`} target="_blank" className="flex items-center justify-between w-full cursor-pointer">
                             <span>Download Invoice</span>
-                            <DownloadCloud className="mr-2 h-5 w-5 ml-auto" />
+                            <DownloadCloud className="h-4 w-4" />
                         </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={sendReminder}>
-                        <span className="cursor-pointer">Reminder Email</span>
-                        <Mail className="mr-2 h-5 w-5 ml-auto" />
+                    <DropdownMenuItem onClick={sendReminder} className="flex items-center justify-between w-full cursor-pointer">
+                        <span>Reminder Email</span>
+                        <Mail className="h-4 w-4" />
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild >
+                    <DropdownMenuItem asChild>
                         <DeleteInvoiceDialog id={invoiceId}>
-                            <div className="flex w-full items-center">
+                            <div className="flex items-center justify-between w-full cursor-pointer">
                                 <span>Delete</span>
-                                <Trash className="mr-2 h-4 w-4 ml-auto" />
+                                <Trash className="h-4 w-4" />
                             </div>
                         </DeleteInvoiceDialog>
                     </DropdownMenuItem>
@@ -72,4 +72,3 @@ export function InvoiceDropdown({ invoiceId, status }: InvoiceDropdownProps) {
         </DropdownMenu>
     )
 }
-

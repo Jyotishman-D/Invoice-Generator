@@ -8,10 +8,9 @@ import { redirect } from "next/navigation";
 export default async function Dashboard() {
 
     const profile = await CurrentProfile();
-
     if (!profile) {
         return redirect("/login")
-    }
+    };
 
     return (
         <div>

@@ -4,51 +4,24 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { emailClient } from "@/lib/mailtrap";
 import { CurrencyFormat } from "@/hooks/currency";
-
-const invoiceSchema = z.object({
-    invoiceName: z.string().min(1),
-    invoiceNumber: z.coerce.number(),
-    currency: z.enum(["INR", "USD"]),
-    status: z.enum(["PAID", "PENDING"]),
-    from: z.object({
-        name: z.string().min(1),
-        email: z.string().email(),
-        address: z.string().min(1)
-    }),
-    to: z.object({
-        name: z.string().min(1),
-        email: z.string().email(),
-        address: z.string().min(1)
-    }),
-    date: z.coerce.date(),
-    dueDate: z.coerce.number().optional(),
-    invoiceDescription: z.string().min(1),
-    invoiceItemQuantity: z.coerce.number(),
-    invoiceItemrate: z.coerce.number(),
-    invoiceItemTotalAmount: z.coerce.number(),
-    note: z.string().optional()
-
-})
+import { invoiceSchema } from "@/lib/zod";
 
 export async function PATCH(req: NextRequest, { params }: { params: { invoiceId: string } }) {
-
     try {
         const profile = await CurrentProfile();
 
         if (!profile) {
             return new NextResponse("Unauthorized", { status: 401 })
-        }
+        };
 
         const body = await req.json();
-
         const result = invoiceSchema.safeParse(body)
 
         if (!result.success) {
             return NextResponse.json(result.error.format(), { status: 400 })
-        }
+        };
 
         const values = result.data;
-
         const invoiceUpdate = await prisma.invoice.update({
             where: {
                 id: params.invoiceId,
@@ -104,4 +77,4 @@ export async function PATCH(req: NextRequest, { params }: { params: { invoiceId:
         console.log(error);
         return new NextResponse("Internal server error", { status: 500 })
     }
-}
+};

@@ -20,7 +20,7 @@ import { toast } from "sonner";
 
 interface OnBoardingFormProps {
     name: string | null
-}
+};
 
 const formSchema = z.object({
     name: z.string().min(2, {
@@ -29,12 +29,11 @@ const formSchema = z.object({
     address: z.string().min(2, {
         message: "Address is required.",
     }),
-})
+});
 
 export default function OnBoardingForm({ name }: OnBoardingFormProps) {
 
     const router = useRouter();
-
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -44,9 +43,7 @@ export default function OnBoardingForm({ name }: OnBoardingFormProps) {
     });
 
     const { isSubmitting, isValid } = form.formState
-
     async function onSubmit(values: z.infer<typeof formSchema>) {
-
         try {
             await axios.patch(`/api/onboardingRoute`, values);
             router.push("/dashboard")
@@ -63,7 +60,7 @@ export default function OnBoardingForm({ name }: OnBoardingFormProps) {
                 toast.error("Something went wrong")
             }
         }
-    }
+    };
 
     return (
         <div className="h-screen w-screen flex items-center justify-center">
@@ -89,7 +86,6 @@ export default function OnBoardingForm({ name }: OnBoardingFormProps) {
                                         </FormItem>
                                     )}
                                 />
-
                                 <FormField
                                     control={form.control}
                                     name="address"
@@ -111,4 +107,4 @@ export default function OnBoardingForm({ name }: OnBoardingFormProps) {
             </Card>
         </div>
     )
-}
+};
