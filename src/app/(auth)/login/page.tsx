@@ -1,12 +1,10 @@
 import { SubmitButton } from "@/components/submitButton";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { signIn } from "@/lib/auth";
 import { BsGithub } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
 
 export default function Login() {
-
     return <div className="h-screen w-screen flex items-center justify-center p-4">
         <Card className="w-full max-w-sm">
             <CardHeader>

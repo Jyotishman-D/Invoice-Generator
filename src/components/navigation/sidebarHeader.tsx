@@ -10,10 +10,11 @@ import {
 import { signOut } from "@/lib/auth";
 import { ChevronDown, LogOut, Settings, User as UserProfile } from "lucide-react"
 import Link from "next/link";
+import { ModeToggle } from "../toogle";
 
 interface SidebarHeaderProps {
     name: string | null
-}
+};
 
 export function SidebarHeader({ name }: SidebarHeaderProps) {
     return (
@@ -30,13 +31,11 @@ export function SidebarHeader({ name }: SidebarHeaderProps) {
                         <span className="cursor-pointer">My Profile</span>
                         <UserProfile className="mr-2 h-5 w-5 ml-auto" />
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                        <Link href="/settings/profile">
-                            <span>Setting</span>
-                            <Settings className="mr-2 h-5 w-5 ml-auto" />
-                        </Link>
+                    <DropdownMenuItem>
+                        <span className="cursor-pointer">Dark mode</span>
+                        <ModeToggle />
                     </DropdownMenuItem>
-                    <DropdownMenuItem >
+                    <DropdownMenuItem>
                         <span className="cursor-pointer">Logout</span>
                         <LogOut className="mr-2 h-5 w-5 ml-auto" />
                     </DropdownMenuItem>
